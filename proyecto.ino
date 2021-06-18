@@ -3,7 +3,12 @@
 #include <ESP8266WiFi.h> // Include ESP8266wifi Library
 #define DHTPIN 2// pin al que hemos conectado el DHT 11
 #define DHTTYPE DHT11 //DHT21, DHT22
+#include <Servo.h> //servomotor
+Servo servo;
+int val;
 int fan = A0;
+int lestado = 4;  // Digital pin D2
+int sensor = 12;  // Digital pin D6
 char ssid[] = "ZTE-ec1596"; // Nombre del WiFi (nombre del router)
 char pass[] = "Home789*Aa"; // WiFi router password
 unsigned long myChannelNumber = 1399943; // Thingspeak número de canal
@@ -16,7 +21,9 @@ WiFiClient client;
 float temperatura; 
 float humedad;
 void setup() {
-//pinMode(FAN_PIN, OUTPUT);
+pinMode(fan, OUTPUT);
+pinMode(sensor, INPUT);   // declare sensor as input
+pinMode(lestado, OUTPUT);  // declare LED as output
 WiFi.begin(ssid, pass); // Inicia WiFi
 ThingSpeak.begin(client); // Inicia ThingSpeak
 Serial.begin(115200); // Velocidad puerto serie
@@ -36,6 +43,9 @@ Serial.println("Conectado a WiFi");
 Serial.print("Dirección IP: ");
 Serial.println(WiFi.localIP());
 dht.begin(); // Inicia el sensor
+servo.attach(13); // attaches the servo on pin D7 to the servo object
+servo.write(0);
+
 }
 
 void loop() {
@@ -71,19 +81,36 @@ Serial.println("****************************************************************
    Serial.println("**********************************************************************************");
    Serial.println();
    delay(5000);
+long estado = digitalRead(sensor);
+    if(estado == HIGH) {
+      digitalWrite (lestado, HIGH);
+      Serial.println("Se detecto movimiento!");
+      delay(1000);
+    }
+    else {
+      digitalWrite (lestado, LOW);
+      Serial.println("No se detecto movimiento!");
+      delay(1000);
+      }
 
-if(temperatura>=19){ //Condición para mantener el ambiente fresco.
+if(temperatura>=12){ //Condición para mantener el ambiente fresco.
 Serial.println("Ventiladores Encendidos");
 analogWrite(fan,500); //Encendemos el ventilador
 temperatura= dht.readTemperature(); //Volvemos a leer la temperatura
 delay(2000);
+servo.write(90);
+delay(1000);
 }
 else{
+  Serial.println("Ventiladores Apagados");
   digitalWrite(fan,0);
+  servo.write(0);
+  delay(1000);
 }
 // Carga los valores a enviar
 ThingSpeak.setField(1, temperatura);
 ThingSpeak.setField(2, humedad);
+ThingSpeak.setField(3, estado);
 
 // Escribe todos los campos a la vez.
 ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
@@ -91,5 +118,5 @@ ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
 //Serial.println("¡Datos enviados a ThingSpeak!");
 
 // Añadimos un retraso de 5minutos para limtitar el número de escrituras en Thinhspeak
-delay (300000);
+//delay (300000);
 }//
