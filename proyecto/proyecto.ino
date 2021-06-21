@@ -104,12 +104,12 @@ Serial.println("****************************************************************
       delay(4000);
     }
 //Carga los valores a enviar
-//ThingSpeak.setField(1, temperatura);
-//ThingSpeak.setField(2, humedad);
-//ThingSpeak.setField(3, estado);
+ThingSpeak.setField(1, temperatura);
+ThingSpeak.setField(2, humedad);
+ThingSpeak.setField(3, estado);
 //Escribe todos los campos a la vez.
-//ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
-//Serial.println("¡Datos enviados a ThingSpeak!");
+ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+Serial.println("¡Datos enviados a ThingSpeak!");
 //Añadimos un retraso de 5minutos para limtitar el número de escrituras en Thinhspeak
-//delay (300000);
+delay (300000);
 }//
