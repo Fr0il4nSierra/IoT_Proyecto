@@ -74,7 +74,7 @@ void loop() {
         if(estado == HIGH) {
           digitalWrite (lestado2, HIGH);
           Serial.println("Se detecto movimiento!");
-          //mover servomotor pos 0ª
+          //mover servomotor pos 180ª
           myservo.write(180);
           delay(1000);
         }
@@ -87,6 +87,7 @@ void loop() {
           }
         if(temperatura>16){ //Condición para mantener el ambiente fresco.
           Serial.println("Ventiladores Encendidos");
+          Serial.println("Revisar sistema de refrigeracion");
           digitalWrite (IN4, HIGH);
           digitalWrite (IN3, HIGH); 
           Serial.println("Mover servo");
@@ -95,7 +96,6 @@ void loop() {
           temperatura= dht.readTemperature(); //Volvemos a leer la temperatura
           delay(1000);           
           digitalWrite(lestado2, HIGH);
-          myservo.write(0);  
           delay(10); 
         }
         else
@@ -103,7 +103,8 @@ void loop() {
           Serial.println("Ventiladores Apagados");
           digitalWrite (IN3, LOW); 
           digitalWrite (IN4, LOW); 
-          Serial.println("Mover servo");
+          Serial.println("Mover servo");          
+          Serial.println("Sistema de refrigeracion estable");
           //mover servomotor pos 0ª
           myservo.write(0);
           delay(10); 
