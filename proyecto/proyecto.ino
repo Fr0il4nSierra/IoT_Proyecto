@@ -21,9 +21,9 @@ float temperatura;
 float humedad;
 
 void setup() {
+    pinMode(sensor, INPUT);   // declare sensor as input
     pinMode(IN4, OUTPUT);    // Input4 conectada al pin 5
     pinMode(IN3, OUTPUT);    // Input3 conectada al pin 6
-    pinMode(sensor, INPUT);   // declare sensor as input
     pinMode(lestado1, OUTPUT);  // declare LED as output
     pinMode(lestado2, OUTPUT);  // declare LED as output
     WiFi.begin(ssid, pass); // Inicia WiFi
@@ -74,11 +74,15 @@ void loop() {
         if(estado == HIGH) {
           digitalWrite (lestado2, HIGH);
           Serial.println("Se detecto movimiento!");
+          //mover servomotor pos 0ª
+          myservo.write(180);
           delay(1000);
         }
         else {
           digitalWrite (lestado1, LOW);
           Serial.println("No se detecto movimiento!");
+          //mover servomotor pos 0ª
+          myservo.write(0);
           delay(1000);
           }
         if(temperatura>16){ //Condición para mantener el ambiente fresco.
